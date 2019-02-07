@@ -1,34 +1,46 @@
-// import { GraphQLObjectType, GraphQLString, GraphQLSchema } from 'graphql';
+import {
+    GraphQLObjectType, GraphQLString, GraphQLInt,
+    GraphQLSchema, GraphQLID
+} from 'graphql';
 
-// const BookSchema = new GraphQLObjectType({
-//     name: 'BookType',
-//     fields: () => ({
-//         author: { type: GraphQLString }
-//     })
-// })
+const books = [{
+    name: '12 roles for life',
+    authorid: 1,
+    id: 1,
+    publication: 'P1'
+},
+{
+    name: '14 roles for life',
+    authorid: 2,
+    id: 1,
+    publication: 'P2'
+},
+]
 
-// const RootQuery = new GraphQLObjectType({
-//     name: 'RootQueryType',
-//     fields: {
-//         book: {
-//             type: BookSchema,
-//             args: { id: { type: GraphQLString } },
-//             resolve: (parent, args) => {
-//                 console.log(args);
-//                 return ({
-//                     author: 'Vivek'
-//                 })
-//             }
-//         }
-//     }
-// });
+const BookSchema = new GraphQLObjectType({
+    name: 'Book',
+    fields: () => ({
+        publication: { type: GraphQLString },
+        authorid: { type: GraphQLInt },
+        name: { type: GraphQLString },
+    })
+});
 
-// const schema = new GraphQLSchema({
-//     query: RootQuery
-// });
+const RootQuerySchema = new GraphQLObjectType({
+    name: 'RootQuery',
+    fields: {
+        book: {
+            type: BookSchema,
+            args: { id: { type: GraphQLID } },
+            resolve: (parent, args) => {
+                return books.find(b => b.id == args.id )
+            }
+        }
+    }
+})
 
-// export { schema };
+const schema = new GraphQLSchema({
+    query: RootQuerySchema
+});
 
-
-
-
+export { schema };
