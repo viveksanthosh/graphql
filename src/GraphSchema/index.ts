@@ -1,6 +1,6 @@
 import {
     GraphQLObjectType, GraphQLString, GraphQLInt,
-    GraphQLSchema, GraphQLID
+    GraphQLSchema
 } from 'graphql';
 
 const books = [{
@@ -12,28 +12,59 @@ const books = [{
 {
     name: '14 roles for life',
     authorid: 2,
-    id: 1,
+    id: 2,
     publication: 'P2'
 },
-]
+];
+
+
+const authors = [{
+    name: 'Jordan',
+    id: 1,
+    publications: 100
+},
+{
+    name: 'Not Jordan',
+    id: 2,
+    publications: 5
+},
+];
+
+
+const AuthorSchema = new GraphQLObjectType({
+    name: 'Author',
+    fields: () => ({
+        publications: { type: GraphQLString },
+        id: { type: GraphQLInt },
+        name: { type: GraphQLString },
+    })
+});
 
 const BookSchema = new GraphQLObjectType({
     name: 'Book',
     fields: () => ({
         publication: { type: GraphQLString },
         authorid: { type: GraphQLInt },
+        id: { type: GraphQLInt },
         name: { type: GraphQLString },
+        author: {
+            type: AuthorSchema,
+            resolve: (parent, args) => {
+                return authors.find(a => a.id === parent.authorid)
+            }
+        }
     })
 });
+
 
 const RootQuerySchema = new GraphQLObjectType({
     name: 'RootQuery',
     fields: {
         book: {
             type: BookSchema,
-            args: { id: { type: GraphQLID } },
+            args: { id: { type: GraphQLInt } },
             resolve: (parent, args) => {
-                return books.find(b => b.id == args.id )
+                return books.find(b => b.id === args.id)
             }
         }
     }
