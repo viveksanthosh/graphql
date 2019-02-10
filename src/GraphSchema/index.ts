@@ -3,54 +3,49 @@ import {
     GraphQLSchema
 } from 'graphql';
 
-const books = [{
-    name: '12 roles for life',
-    authorid: 1,
+const dogs = [{
+    name: 'Manzu',
+    ownerid: 1,
     id: 1,
     publication: 'P1'
 },
 {
-    name: '14 roles for life',
-    authorid: 2,
-    id: 2,
-    publication: 'P2'
+    name: 'Usha',
+    ownerid: 2,
+    id: 2
 },
 ];
 
 
-const authors = [{
-    name: 'Jordan',
+const owner = [{
+    name: 'Vivek',
     id: 1,
-    publications: 100
 },
 {
-    name: 'Not Jordan',
+    name: 'Asha',
     id: 2,
-    publications: 5
 },
 ];
 
 
-const AuthorSchema = new GraphQLObjectType({
-    name: 'Author',
+const OwnerSchema = new GraphQLObjectType({
+    name: 'Owner',
     fields: () => ({
-        publications: { type: GraphQLString },
         id: { type: GraphQLInt },
         name: { type: GraphQLString },
     })
 });
 
-const BookSchema = new GraphQLObjectType({
-    name: 'Book',
+const DogSchema = new GraphQLObjectType({
+    name: 'Dog',
     fields: () => ({
-        publication: { type: GraphQLString },
-        authorid: { type: GraphQLInt },
+        ownerid: { type: GraphQLInt },
         id: { type: GraphQLInt },
         name: { type: GraphQLString },
-        author: {
-            type: AuthorSchema,
+        owner: {
+            type: OwnerSchema,
             resolve: (parent, args) => {
-                return authors.find(a => a.id === parent.authorid)
+                return dogs.find(a => a.id === parent.authorid)
             }
         }
     })
@@ -60,18 +55,38 @@ const BookSchema = new GraphQLObjectType({
 const RootQuerySchema = new GraphQLObjectType({
     name: 'RootQuery',
     fields: {
-        book: {
-            type: BookSchema,
+        dog: {
+            type: DogSchema,
             args: { id: { type: GraphQLInt } },
             resolve: (parent, args) => {
-                return books.find(b => b.id === args.id)
+                return dogs.find(b => b.id === args.id)
+            }
+        }
+    }
+});
+
+const Mutation = new GraphQLObjectType({
+    name: 'AddDog',
+    fields: {
+        addDog: {
+            type: DogSchema,
+            args: {
+                id: { type: GraphQLInt },
+                name: { type: GraphQLString },
+                ownerid: { type: GraphQLInt }
+            },
+            resolve(parent, args) {
+                let dog = { id: args.id, name: args.name, ownerid: args.ownerid };
+                dogs.push(dog);
+                return dog;
             }
         }
     }
 })
 
 const schema = new GraphQLSchema({
-    query: RootQuerySchema
+    query: RootQuerySchema,
+    mutation: Mutation
 });
 
 export { schema };
