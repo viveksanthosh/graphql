@@ -1,6 +1,7 @@
 import {
     GraphQLObjectType, GraphQLString, GraphQLInt,
-    GraphQLSchema
+    GraphQLSchema,
+    GraphQLNonNull
 } from 'graphql';
 
 const dogs = [{
@@ -71,9 +72,9 @@ const Mutation = new GraphQLObjectType({
         addDog: {
             type: DogSchema,
             args: {
-                id: { type: GraphQLInt },
-                name: { type: GraphQLString },
-                ownerid: { type: GraphQLInt }
+                id: { type: new GraphQLNonNull(GraphQLInt) },
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                ownerid: { type: new GraphQLNonNull(GraphQLInt) }
             },
             resolve(parent, args) {
                 let dog = { id: args.id, name: args.name, ownerid: args.ownerid };
