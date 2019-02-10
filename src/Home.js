@@ -21,6 +21,24 @@ const ShowDog = ({ dog }) => <Query query={
   }
 </Query>
 
+const ShowAllDogs = ({  }) => <Query query={
+  gql`
+      query {
+         dogs{
+           name
+         }
+       }
+       `
+}
+// pollInterval={500}
+>{(dogsGraph) =>
+  <div>
+    <h3>All Dogs</h3>
+    {dogsGraph.data.dogs && <div>{dogsGraph.data.dogs.map(d => <p>{d.name}</p>)}</div>}
+  </div>
+  }
+</Query>
+
 const nameRef = React.createRef();
 const idRef = React.createRef();
 const owneridRef = React.createRef();
@@ -52,6 +70,8 @@ const Main = () => {
     <input value={dogId} onChange={(e) => setDogId(Number(e.target.value))} />
     <br />
     <ShowDog dog={dogId} />
+
+    <ShowAllDogs/>
 
     <br />
     <AddDog />
