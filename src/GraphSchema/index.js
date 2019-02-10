@@ -1,6 +1,7 @@
 import {
     GraphQLObjectType, GraphQLString, GraphQLInt,
     GraphQLSchema,
+    GraphQLList,
     GraphQLNonNull
 } from 'graphql';
 
@@ -61,6 +62,12 @@ const RootQuerySchema = new GraphQLObjectType({
             args: { id: { type: GraphQLInt } },
             resolve: (parent, args) => {
                 return dogs.find(b => b.id === args.id)
+            }
+        },
+        dogs: {
+            type: new GraphQLList(DogSchema),
+            resolve: (parent, args) => {
+                return dogs;
             }
         }
     }

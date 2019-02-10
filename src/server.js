@@ -5,11 +5,9 @@ import { renderToString } from 'react-dom/server';
 import * as graphqlHTTP from 'express-graphql'
 
 import App from './App';
-
-let assets: any;
-
+let assets;
 const syncLoadAssets = () => {
-  assets = require(process.env.RAZZLE_ASSETS_MANIFEST!);
+  assets = require(process.env.RAZZLE_ASSETS_MANIFEST);
 };
 syncLoadAssets();
 
@@ -19,8 +17,8 @@ const server = express()
     schema,
     graphiql: true
   }))
-  .use(express.static(process.env.RAZZLE_PUBLIC_DIR!))
-  .get('/*', (req: express.Request, res: express.Response) => {
+  .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
+  .get('/*', (req, res) => {
     const context = {};
     const markup = renderToString(
         <App />
